@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Convertisseur v2">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="description" content="Convertisseur et cours des devises">
+  <title>Convertisseur v2</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <style>
+    html, body { background: #000 !important; color: #f5f5f5 !important; }
+  </style>
+  <link rel="stylesheet" href="css/style.css?v=2.9">
+  <link rel="stylesheet" href="css/markets.css?v=2.9">
+</head>
+<body>
+  <div class="app">
+    <div class="update-banner" id="updateBanner" hidden>
+      <div class="update-banner-text">
+        <strong id="updateBannerTitle">Mise à jour disponible</strong>
+        <span id="updateBannerNotes"></span>
+      </div>
+      <div class="update-banner-actions">
+        <button type="button" class="update-banner-btn" id="updateBannerBtn">Mettre à jour</button>
+        <button type="button" class="update-banner-dismiss" id="updateBannerDismiss" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <!-- Écran Convertisseur -->
+    <div class="screen" id="screenConvert">
+      <header class="header">
+        <div class="header-row">
+          <div class="brand">
+            <img class="brand-icon" src="icons/icon-192.png" alt="" width="36" height="36">
+            <div>
+              <h1 class="logo">Convertisseur</h1>
+              <span class="version-badge">v2.9 · Mise à jour</span>
+            </div>
+          </div>
+          <button type="button" class="status-pill" id="rateStatus" title="Actualiser">
+            <span class="status-dot"></span>
+            <span class="status-text">Chargement…</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="panel panel-from">
+          <span class="panel-label">Montant source</span>
+          <div class="panel-row">
+            <input type="text" inputmode="decimal" id="amount" class="amount-input" placeholder="0" autocomplete="off" enterkeyhint="done">
+            <button type="button" class="currency-btn" id="fromCurrency" data-target="from">
+              <span class="btn-flag" id="fromFlag">🇺🇸</span>
+              <span class="btn-code" id="fromCode">USD</span>
+            </button>
+          </div>
+          <span class="panel-sub" id="fromName">Dollar américain</span>
+        </section>
+
+        <div class="swap-wrap">
+          <button type="button" class="swap-btn" id="swapBtn" aria-label="Inverser">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+          </button>
+        </div>
+
+        <section class="panel panel-to" id="resultCard">
+          <span class="panel-label">Montant converti</span>
+          <div class="panel-row">
+            <output class="result-value" id="result" for="amount">—</output>
+            <button type="button" class="currency-btn" id="toCurrency" data-target="to">
+              <span class="btn-flag" id="toFlag">🇪🇺</span>
+              <span class="btn-code" id="toCode">EUR</span>
+            </button>
+          </div>
+          <span class="panel-sub" id="toName">Euro</span>
+        </section>
+
+        <div class="meta-row">
+          <p class="rate-detail" id="rateDetail"></p>
+          <button type="button" class="copy-btn" id="copyBtn" hidden>
+            <span id="copyLabel">Copier</span>
+          </button>
+        </div>
+
+        <section class="history-section" id="historyCard" hidden>
+          <div class="section-head">
+            <h2>Conversions récentes</h2>
+            <button type="button" class="link-btn" id="clearHistory">Effacer</button>
+          </div>
+          <ul class="history-list" id="historyList"></ul>
+        </section>
+      </main>
+    </div>
+
+    <!-- Écran Cours -->
+    <div class="screen" id="screenMarkets" hidden>
+      <header class="markets-header">
+        <button type="button" class="pair-select" id="pairBtn">
+          <span class="pair-flag" id="pairFromFlag">🇪🇺</span>
+          <span class="pair-code" id="pairLabel">EUR / USD</span>
+          <span class="pair-flag" id="pairToFlag">🇺🇸</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <button type="button" class="icon-btn" id="marketsRefresh" aria-label="Actualiser">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+        </button>
+      </header>
+
+      <p class="markets-currency-name" id="marketsCurrencyName">Euro → Dollar américain</p>
+
+      <div class="markets-price-block">
+        <div class="price-line">
+          <span class="markets-price" id="marketsPrice">—</span>
+          <span class="markets-quote" id="marketsQuote">USD</span>
+        </div>
+        <div class="markets-change" id="marketsChange">
+          <span class="change-abs" id="changeAbs">—</span>
+          <span class="change-pct" id="changePct">—</span>
+          <span class="change-period" id="changePeriod">· —</span>
+        </div>
+      </div>
+
+      <div class="markets-stats" id="marketsStats">
+        <div class="stat">
+          <span class="stat-label">Plus haut</span>
+          <span class="stat-value" id="statHigh">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Plus bas</span>
+          <span class="stat-value" id="statLow">—</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Ouverture</span>
+          <span class="stat-value" id="statOpen">—</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap" id="chartWrap">
+        <canvas id="chartCanvas" width="400" height="260"></canvas>
+        <div class="scrub-date" id="scrubDate" hidden></div>
+        <div class="chart-labels" id="chartLabels">
+          <span class="chart-label chart-label-high" id="chartHigh">—</span>
+          <span class="chart-label chart-label-low" id="chartLow">—</span>
+        </div>
+      </div>
+
+      <div class="period-bar">
+        <div class="period-pills" id="periodPills">
+          <button type="button" class="period-pill active" data-period="1D">1J</button>
+          <button type="button" class="period-pill" data-period="1W">1S</button>
+          <button type="button" class="period-pill" data-period="1M">1M</button>
+          <button type="button" class="period-pill" data-period="6M">6M</button>
+          <button type="button" class="period-pill" data-period="1Y">1A</button>
+          <button type="button" class="period-pill" data-period="5Y">5A</button>
+          <button type="button" class="period-pill" data-period="MAX">Max</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav bas -->
+    <nav class="bottom-nav">
+      <button type="button" class="nav-item active" data-screen="convert" id="navConvert">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+        <span>Convertir</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="markets" id="navMarkets">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/><path d="M14 7h6v6"/></svg>
+        <span>Cours</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <div class="modal" id="currencyModal" hidden>
+    <div class="modal-panel">
+      <header class="modal-head">
+        <button type="button" class="modal-back" id="modalClose" aria-label="Retour">←</button>
+        <h2 class="modal-title" id="modalTitle">Devise</h2>
+        <span class="modal-spacer"></span>
+      </header>
+      <div class="search-wrap">
+        <input type="search" id="currencySearch" class="search-input" placeholder="Rechercher…" autocomplete="off">
+        <button type="button" class="search-clear" id="searchClear" hidden>✕</button>
+      </div>
+      <div class="quick-chips" id="quickChips"></div>
+      <div class="list-scroll" id="listScroll">
+        <ul class="currency-list" id="currencyList" role="listbox"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=2.9"></script>
+  <script src="js/currencies.js?v=2.9"></script>
+  <script src="js/markets.js?v=2.9"></script>
+  <script src="js/app.js?v=2.9"></script>
+</body>
+</html>
