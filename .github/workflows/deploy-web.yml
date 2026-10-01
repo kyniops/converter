@@ -10,6 +10,7 @@ on:
       - 'index.html'
       - 'update.json'
       - 'manifest.json'
+      - 'privacy.html'
       - 'icons/**'
       - 'sw.js'
       - '.github/workflows/deploy-web.yml'
@@ -36,6 +37,7 @@ jobs:
           cp -f index.html www/index.html 2>/dev/null || true
           cp -f update.json www/update.json 2>/dev/null || true
           cp -f manifest.json www/manifest.json 2>/dev/null || true
+          cp -f privacy.html www/privacy.html 2>/dev/null || true
           cp -f sw.js www/sw.js 2>/dev/null || true
           cp -f js/*.js www/js/ 2>/dev/null || true
           cp -f css/*.css www/css/ 2>/dev/null || true

@@ -8,6 +8,8 @@
     "sync:www": "powershell -ExecutionPolicy Bypass -File scripts/sync-www.ps1",
     "build:apk": "npm run sync && cd android && .\\gradlew.bat assembleDebug",
     "build:apk:beta": "powershell -ExecutionPolicy Bypass -File scripts/build-beta.ps1",
+    "keystore": "powershell -ExecutionPolicy Bypass -File scripts/create-keystore.ps1",
+    "build:release": "powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1",
     "release": "powershell -ExecutionPolicy Bypass -File scripts/release.ps1"
   },
   "dependencies": {

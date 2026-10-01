@@ -16,6 +16,8 @@ android/app/release/
 .capacitor/
 *.keystore
 *.jks
+android/key.properties
+android/upload-keystore.jks
 .env
 .env.*
 *.pem

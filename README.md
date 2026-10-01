@@ -11,26 +11,10 @@ Application mobile légère pour convertir rapidement des montants entre devises
 - Fonctionne hors ligne avec les derniers taux connus
 - Installable sur téléphone (PWA)
 
-## Application Android (APK)
+## Application Android (APK / Play Store)
 
-### Mises à jour sans renvoyer l’APK à chaque fois
-
-Voir **[UPDATE.md](UPDATE.md)** : pipeline GitHub Pages + Releases.
-
-En résumé :
-1. Remplir `github.owner` dans `js/config.js`
-2. Push sur GitHub + activer Pages
-3. `npm run build:apk:beta` → installer **une fois**
-4. Ensuite un `git push` met à jour l’UI automatiquement
-
-### Régénérer l’APK après des modifications natives
-
-```bash
-npm run build:apk
-```
-
-Ou double-cliquez sur **`creer-apk.bat`**.
-
+- Tests perso (live Pages) : voir **[UPDATE.md](UPDATE.md)** → `npm run build:apk:beta`
+- **Publication Play Store** : voir **[STORE.md](STORE.md)** → `npm run build:release`
 ---
 
 ## Utilisation web (PWA)
