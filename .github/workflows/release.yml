@@ -1,0 +1,98 @@
+name: Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Resolve version
+        id: meta
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION=$(node -p "require('./package.json').version.replace(/-.*/, '')")
+          fi
+          CODE=$(grep -oP 'versionCode\s+\K[0-9]+' android/app/build.gradle | head -1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          echo "Building v$VERSION (code $CODE)"
+
+      - name: Sync web assets
+        run: |
+          mkdir -p www/js www/css www/icons
+          cp -f index.html update.json manifest.json sw.js www/ 2>/dev/null || true
+          cp -f js/*.js www/js/
+          cp -f css/*.css www/css/
+          cp -rf icons/* www/icons/ 2>/dev/null || true
+
+      - name: Install & sync Capacitor
+        run: |
+          npm ci
+          npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: chmod +x gradlew && ./gradlew assembleDebug
+
+      - name: Package artifacts
+        run: |
+          VERSION="${{ steps.meta.outputs.version }}"
+          CODE="${{ steps.meta.outputs.code }}"
+          mkdir -p dist
+          APK=$(find android/app/build/outputs/apk -name '*.apk' | head -n 1)
+          cp "$APK" "dist/convertisseur-${VERSION}.apk"
+          cat > update.json <<EOF
+          {
+            "version": "${VERSION}",
+            "versionCode": ${CODE},
+            "notes": "Version ${VERSION}",
+            "apkUrl": "https://github.com/${{ github.repository }}/releases/download/v${VERSION}/convertisseur-${VERSION}.apk"
+          }
+          EOF
+          cp update.json www/update.json
+          cp update.json dist/update.json
+
+      - name: Commit update.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add update.json www/update.json
+          if git diff --staged --quiet; then
+            echo "No update.json changes"
+          else
+            git commit -m "chore: update.json for v${{ steps.meta.outputs.version }}"
+            git push origin HEAD:${{ github.event.repository.default_branch }} || true
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: Convertisseur v${{ steps.meta.outputs.version }}
+          body: Version ${{ steps.meta.outputs.version }}
+          files: |
+            dist/convertisseur-${{ steps.meta.outputs.version }}.apk
+            dist/update.json
+          generate_release_notes: true
+          fail_on_unmatched_files: true

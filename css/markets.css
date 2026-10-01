@@ -1,0 +1,361 @@
+/* Markets / Cours screen */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.screen[hidden] {
+  display: none !important;
+}
+
+.app {
+  padding-bottom: calc(72px + var(--safe-bottom));
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 8px 18px calc(10px + var(--safe-bottom));
+  background: rgba(0, 0, 0, 0.92);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-family: inherit;
+  font-size: 0.65rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nav-item.active {
+  color: var(--text);
+}
+
+.nav-item:active {
+  opacity: 0.7;
+}
+
+/* Markets header */
+.markets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pair-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pair-select:active {
+  background: var(--surface-2);
+}
+
+.pair-flag {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.pair-vs {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-3);
+  margin: 0 2px;
+}
+
+.pair-quote-code {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.markets-currency-name {
+  font-size: 0.78rem;
+  color: var(--text-3);
+  margin: -12px 0 12px;
+  padding-left: 2px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.icon-btn:active {
+  background: var(--surface-2);
+}
+
+/* Price block — style capture */
+.markets-price-block {
+  margin-bottom: 8px;
+}
+
+.price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.markets-price {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.markets-quote {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.markets-change {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.markets-change.up .change-abs,
+.markets-change.up .change-pct {
+  color: #00c805;
+}
+
+.markets-change.down .change-abs,
+.markets-change.down .change-pct {
+  color: #ff5000;
+}
+
+.markets-change.flat .change-abs,
+.markets-change.flat .change-pct {
+  color: var(--text-2);
+}
+
+.change-period {
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+/* Chart */
+.chart-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+  margin: 8px -6px 4px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+
+.chart-wrap.scrubbing .chart-labels {
+  opacity: 0.25;
+}
+
+.scrub-date {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(20, 20, 20, 0.9);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.01em;
+}
+
+.scrub-date[hidden] {
+  display: none;
+}
+
+.change-pct.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #00c805;
+  color: #000 !important;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.markets-change.up .change-pct.pill {
+  background: #00c805;
+  color: #000 !important;
+}
+
+.markets-change.down .change-pct.pill {
+  background: #ff5000;
+  color: #fff !important;
+}
+
+.markets-change.flat .change-pct.pill {
+  background: #333;
+  color: #fff !important;
+}
+
+#chartCanvas {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  display: block;
+}
+
+.chart-labels {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.chart-label {
+  position: absolute;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-label-high {
+  right: 10px;
+  top: 10px;
+  color: var(--text-2);
+}
+
+.chart-label-low {
+  right: 10px;
+  bottom: 30px;
+  color: var(--text-2);
+}
+
+/* Stats row */
+.markets-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* Period pills — style capture */
+.period-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.period-pills {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: #1a1a1a;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.period-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.period-pill {
+  flex: 1;
+  min-width: 36px;
+  padding: 8px 6px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.period-pill.active {
+  background: #2e2e2e;
+}
+
+.period-pill:active {
+  opacity: 0.85;
+}

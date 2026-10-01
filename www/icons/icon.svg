@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Convertisseur">
+  <rect width="512" height="512" rx="96" fill="#09090b"/>
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#71717a" stroke-width="18"/>
+  <!-- $ géométrique centré exactement sur 256,256 (comme l’icône PNG) -->
+  <g fill="#fafafa" transform="translate(256 256)">
+    <path d="M-14-78 h28 v18.5
+      c22 4.5 38 18 38 42.5 0 28-20 42-46 48.5 v55
+      c12-2.5 22-9 28-18.5 l24 12.5
+      c-10 18-28 30-52 34.5 V142 h-28 v-27.5
+      c-26-5-44-21-44-48 0-30 20-45 44-51.5 v-58
+      c-12 2.5-21 9.5-27 18.5 l-24-12.5
+      c10-18 28-30.5 51-35.5 V-78 z
+      M0-42.5 v46
+      c16 4 26 12.5 26 27 0 15.5-10 24.5-26 28.5 z
+      M-14 22.5 v49
+      c-16-4-26-13-26-28.5 0-15 10-24 26-28.5 z"/>
+  </g>
+</svg>
