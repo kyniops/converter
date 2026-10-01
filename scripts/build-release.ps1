@@ -11,12 +11,13 @@ if (-not (Test-Path $props) -or -not (Test-Path $keystore)) {
 }
 
 $configPath = Join-Path $root "js\config.js"
-$configBackup = Get-Content $configPath -Raw
+$configBackup = [System.IO.File]::ReadAllText($configPath)
 $configStore = $configBackup -replace "distribution:\s*'sideload'", "distribution: 'store'"
 if ($configStore -eq $configBackup -and $configBackup -notmatch "distribution:\s*'store'") {
   Write-Error "Could not switch distribution to 'store' in js/config.js"
 }
-[System.IO.File]::WriteAllText($configPath, $configStore)
+$utf8 = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($configPath, $configStore, $utf8)
 
 if (-not $env:JAVA_HOME) {
   $env:JAVA_HOME = (Get-ChildItem 'C:\Program Files\Microsoft\jdk-21*' -Directory | Select-Object -First 1).FullName
@@ -50,6 +51,6 @@ try {
   Write-Host "Desktop copy: $out"
   Write-Host "Upload this AAB in Google Play Console (Production or Internal testing)."
 } finally {
-  [System.IO.File]::WriteAllText($configPath, $configBackup)
+  [System.IO.File]::WriteAllText($configPath, $configBackup, $utf8)
   & "$root\scripts\sync-www.ps1"
 }
