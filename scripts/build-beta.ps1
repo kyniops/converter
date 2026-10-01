@@ -21,16 +21,25 @@ elseif ($config -match 'repo:\s*"([^"]+)"') { $repo = $Matches[1] }
 $beta = Get-Content "capacitor.config.beta.json" -Raw
 $beta = $beta -replace "GITHUB_OWNER", $owner -replace "/converter/", "/$repo/"
 Copy-Item "capacitor.config.json" "capacitor.config.prod.json" -Force
-Set-Content "capacitor.config.json" $beta -Encoding UTF8
+[System.IO.File]::WriteAllText("$root\capacitor.config.json", $beta)
 
 try {
   npx cap sync android
   Push-Location android
   .\gradlew.bat assembleDebug
+  $gradleExit = $LASTEXITCODE
   Pop-Location
-  $apk = Get-ChildItem "android\app\build\outputs\apk" -Recurse -Filter "*.apk" | Select-Object -First 1
+  if ($gradleExit -ne 0) { throw "Gradle assembleDebug a échoué (code $gradleExit)" }
+  $apk = Get-ChildItem "android\app\build\outputs\apk" -Recurse -Filter "*.apk" |
+    Sort-Object LastWriteTime -Descending |
+    Select-Object -First 1
+  if (-not $apk) { throw "Aucun APK trouvé après le build." }
+  $desktop = [Environment]::GetFolderPath('Desktop')
+  $out = Join-Path $desktop "Convertisseur-beta.apk"
+  Copy-Item $apk.FullName $out -Force
   Write-Host ""
   Write-Host "APK beta prêt : $($apk.FullName)"
+  Write-Host "Copie Bureau : $out"
   Write-Host "Il charge https://$owner.github.io/$repo/"
   Write-Host "Installe-le UNE fois ; ensuite un push sur main met à jour l'app."
 } finally {
